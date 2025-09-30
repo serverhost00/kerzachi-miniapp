@@ -6,8 +6,9 @@
   <title>KERZACHI — Mini App</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 0; padding: 16px; }
-    .card { border-radius: 14px; padding: 16px; box-shadow: 0 4px 16px rgba(0,0,0,.06); }
+    :root { --pad: 16px; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 0; padding: var(--pad); }
+    .card { border-radius: 14px; padding: var(--pad); box-shadow: 0 4px 16px rgba(0,0,0,.06); }
     .btn { display:inline-block; padding:12px 16px; border-radius:10px; border:none; cursor:pointer; margin-top:12px; }
   </style>
 </head>
@@ -23,17 +24,17 @@
     tg.ready();
     tg.expand();
 
-    // Приветствие с именем из Telegram
+    // Приветствие по имени (если открыто из бота)
     const u = tg.initDataUnsafe?.user;
     document.getElementById('hello').textContent =
-      u ? `Здравствуйте, ${u.first_name || "гость"}!` : "Здравствуйте!";
+      u ? `Здравствуйте, ${u.first_name || "гость"} | KERZACHI — Кроссовки Тюмень!` : "Здравствуйте!";
 
-    // Отправка данных обратно в чат бота
+    // Кнопка: отправить тест-payload в чат
     document.getElementById('send').addEventListener('click', () => {
       const payload = { type: 'test', message: 'Привет из Mini App', time: Date.now() };
-      tg.sendData(JSON.stringify(payload));
-      tg.showAlert("Отправлено, возвращаемся в чат…");
-      setTimeout(() => tg.close(), 800);
+      tg.sendData(JSON.stringify(payload));                 // прилетит в обработчик F.web_app_data
+      tg.showAlert("Отправлено, возвращаемся в чат…");      // уведомление пользователю
+      setTimeout(() => tg.close(), 800);                    // мягко закрываем Mini App
     });
   </script>
 </body>
