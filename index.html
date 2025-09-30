@@ -1,40 +1,54 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>KERZACHI — Mini App</title>
+  <meta charset="UTF-8">
+  <title>KERZACHI — Заявка Poizon</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    :root { --pad: 16px; }
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 0; padding: var(--pad); }
-    .card { border-radius: 14px; padding: var(--pad); box-shadow: 0 4px 16px rgba(0,0,0,.06); }
-    .btn { display:inline-block; padding:12px 16px; border-radius:10px; border:none; cursor:pointer; margin-top:12px; }
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    label { display: block; margin-top: 15px; }
+    input, textarea {
+      width: 100%; padding: 10px; margin-top: 5px;
+      border: 1px solid #ccc; border-radius: 6px;
+    }
+    button {
+      margin-top: 20px; padding: 12px; width: 100%;
+      background: #000; color: #fff; border: none; border-radius: 6px;
+      font-size: 16px;
+    }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h2>KERZACHI — Mini App</h2>
-    <div id="hello">Готово к запуску…</div>
-    <button class="btn" id="send">Отправить тест в бота</button>
-  </div>
+  <h2>KERZACHI — Заявка Poizon</h2>
+  <form id="poizonForm">
+    <label>Ссылка или код товара:
+      <input type="text" id="link" required>
+    </label>
+    <label>Размер:
+      <input type="text" id="size" required>
+    </label>
+    <label>Комментарий:
+      <textarea id="comment"></textarea>
+    </label>
+    <button type="submit">Отправить заявку</button>
+  </form>
 
   <script>
     const tg = window.Telegram.WebApp;
-    tg.ready();
-    tg.expand();
+    const form = document.getElementById("poizonForm");
 
-    // Приветствие по имени (если открыто из бота)
-    const u = tg.initDataUnsafe?.user;
-    document.getElementById('hello').textContent =
-      u ? `Здравствуйте, ${u.first_name || "гость"} | KERZACHI — Кроссовки Тюмень!` : "Здравствуйте!";
-
-    // Кнопка: отправить тест-payload в чат
-    document.getElementById('send').addEventListener('click', () => {
-      const payload = { type: 'test', message: 'Привет из Mini App', time: Date.now() };
-      tg.sendData(JSON.stringify(payload));                 // прилетит в обработчик F.web_app_data
-      tg.showAlert("Отправлено, возвращаемся в чат…");      // уведомление пользователю
-      setTimeout(() => tg.close(), 800);                    // мягко закрываем Mini App
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const payload = {
+        type: "poizon_request",
+        link: document.getElementById("link").value,
+        size: document.getElementById("size").value,
+        comment: document.getElementById("comment").value,
+        ts: Date.now()
+      };
+      tg.sendData(JSON.stringify(payload));
+      tg.showAlert("Заявка отправлена!");
+      tg.close();
     });
   </script>
 </body>
