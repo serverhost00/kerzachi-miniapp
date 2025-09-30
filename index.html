@@ -32,7 +32,8 @@
     document.getElementById('send').addEventListener('click', () => {
       const payload = { type: 'test', message: 'Привет из Mini App', time: Date.now() };
       tg.sendData(JSON.stringify(payload));
-      tg.close();
+      tg.showAlert("Отправлено, возвращаемся в чат…");
+      setTimeout(() => tg.close(), 800);
     });
   </script>
 </body>
